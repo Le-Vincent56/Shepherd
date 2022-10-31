@@ -2,8 +2,6 @@
 
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet)
 
-_REPLACE OR REMOVE EVERYTING BETWEEN "\_"_
-
 ### Student Info
 
 -   Name: VINCENT LE
@@ -17,16 +15,16 @@ fenced area. With the limited resources you have, use whatever you can, such as 
 ### Controls
 
 -   _List all of the actions the player can have in your simulation_
--   Spawn Marker
-    -   UI Input from a Button using the Mouse
-    -   Creates a Marker that will show the Dog where to move towards
--   Spawn Dog
-    -   UI Input from a Button using the Mouse
-    -   Creates a Dog agent that sheep will flee from
-    -   The Dog will be attracted to the nearest Marker
--   Introduce Food
-    -   UI Input from a Button using the Mouse
-    -   Creates a Food agent that will attract the Sheep
+-   _Spawn Marker_
+    -   _UI Input from a Button using the Mouse_
+    -   _Creates a Marker that will show the Dog where to move towards_
+-   _Spawn Dog_
+    -   _UI Input from a Button using the Mouse_
+    -   _Creates a Dog agent that sheep will flee from_
+    -   _The Dog will be attracted to the nearest Marker_
+-   _Introduce Food_
+    -   _UI Input from a Button using the Mouse_
+    -   _Creates a Food agent that will attract the Sheep_
 
 ## _Sheep_
 
