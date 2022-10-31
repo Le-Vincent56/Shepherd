@@ -6,22 +6,32 @@ _REPLACE OR REMOVE EVERYTING BETWEEN "\_"_
 
 ### Student Info
 
--   Name: _YOUR NAME_
--   Section: _##_
+-   Name: VINCENT LE
+-   Section: 05
 
 ## Simulation Design
 
-_A brief explanation of your simulation._
+_Shepherd is a simulator where you play as a sheep herder, and go through multiple levels of simulating how to navigate a herd of sheep into a single
+fenced area. With the limited resources you have, use whatever you can, such as Dogs and Food, to chase the sheep into the pen._
 
 ### Controls
 
 -   _List all of the actions the player can have in your simulation_
-    -   _Include how to preform each action ( keyboard, mouse, UI Input )_
-    -   _Include what impact an action has in the simulation ( if is could be unclear )_
+-   Spawn Marker
+    -   UI Input from a Button using the Mouse
+    -   Creates a Marker that will show the Dog where to move towards
+-   Spawn Dog
+    -   UI Input from a Button using the Mouse
+    -   Creates a Dog agent that sheep will flee from
+    -   The Dog will be attracted to the nearest Marker
+-   Introduce Food
+    -   UI Input from a Button using the Mouse
+    -   Creates a Food agent that will attract the Sheep
 
-## _Agent 1 Name_
+## _Sheep_
 
-_A brief explanation of this agent._
+_The sheep is one of the main agents in this game, and definitely one of the more plentiful. The sheep's function is to be lead towards the gate,
+which, will in turn, result in a victory of the game. The sheep will flee from Dogs and be attracted to Food._
 
 ### _State 1 Name_
 
@@ -55,9 +65,10 @@ _A brief explanation of this agent._
 
 - _List all the ways this agent can transition to this state_
 
-## _Agent 2 Name_
+## _Dog_
 
-_A brief explanation of this agent._
+_The dog is an agent that will move in a direction that is straight to the closest Marker. If there are any sheep within that distance,
+they will flee from the Dog. However, the Dog will stop before it touches any sheep._
 
 ### _State 1 Name_
 
@@ -94,9 +105,8 @@ _A brief explanation of this agent._
 
 ## Make it Your Own
 
-- _List out what you added to your game to make it different for you_
-- _If you will add more agents or states make sure to list here and add it to the documention above_
-- _If you will add your own assets make sure to list it here and add it to the Sources section
+- _Added a third agent: Food, which will be used to attract sheep_
+- _Create multiple levels so that there is a "completion" to the game_
 
 ## Known Issues
 
