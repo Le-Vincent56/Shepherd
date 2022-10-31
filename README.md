@@ -1,4 +1,4 @@
-# Project _NAME_
+# SHEPHERD
 
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet)
 
@@ -97,8 +97,8 @@ they will flee from the Dog. However, the Dog will stop before it touches any sh
 
 ## Sources
 
--   _List all project sources here –models, textures, sound clips, assets, etc._
--   _If an asset is from the Unity store, include a link to the page and the author’s name_
+-   _https://thkaspar.itch.io/tth-animals_
+-   _https://gvituri.itch.io/tiny-ranch_
 
 ## Make it Your Own
 
