@@ -10,11 +10,10 @@
 ## Simulation Design
 
 _Shepherd is a simulator where you play as a sheep herder, and go through multiple levels of simulating how to navigate a herd of sheep into a single
-fenced area. With the limited resources you have, use whatever you can, such as Dogs and Food, to chase the sheep into the pen._
+fenced area. With the limited resources you have, use whatever you can, such as Dogs, Food, and Markers, to chase the sheep into the pen._
 
 ### Controls
 
--   _List all of the actions the player can have in your simulation_
 -   _Spawn Marker_
     -   _UI Input from a Button using the Mouse_
     -   _Creates a Marker that will show the Dog where to move towards_
