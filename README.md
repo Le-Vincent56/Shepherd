@@ -30,70 +30,94 @@ fenced area. With the limited resources you have, use whatever you can, such as 
 _The sheep is one of the main agents in this game, and definitely one of the more plentiful. The sheep's function is to be lead towards the gate,
 which, will in turn, result in a victory of the game. The sheep will flee from Dogs and be attracted to Food._
 
-### _State 1 Name_
+### _State 1: Wander_
 
-**Objective:** _A brief explanation of this state's objective._
-
-#### Steering Behaviors
-
-- _List all behaviors used by this state_
-   - _If behavior has input data list it here_
-   - _eg, Flee - nearest Agent2_
-- Obstacles - _List all obstacle types this state avoids_
-- Seperation - _List all agents this state seperates from_
-   
-#### State Transistions
-
-- _List all the ways this agent can transition to this state_
-   - _eg, When this agent gets within range of Agent2_
-   - _eg, When this agent has reached target of State2_
-   
-### _State 2 Name_
-
-**Objective:** _A brief explanation of this state's objective._
+**Objective:** _The sheep will wander, staying together as a pack while also applying separation to not overlap each other._
 
 #### Steering Behaviors
 
-- _List all behaviors used by this state_
-- Obstacles - _List all obstacle types this state avoids_
-- Seperation - _List all agents this state seperates from_
+- _Wander, Cohesion, Align, Separation_
+   - _StayCohesive - list of sheep_
+   - _Align - list of sheep_
+   - _Separation - list of sheep_
+- Obstacles - _Screen Bounds_
+- Separation - _Separates from other Sheep_
    
 #### State Transistions
 
-- _List all the ways this agent can transition to this state_
+- _When the sheep are currently not fleeing and not seeking something within range_
+   - _When this agent is not within range of a Food_
+   - _When this agent is not within range of a Dog_
+   
+### _State 2: Flee_
+
+**Objective:** _Sheep will flee if in range of a Dog._
+
+#### Steering Behaviors
+
+- _Flee, Cohesion, Align, and Separation_
+   - _Flee - Dog in range_
+   - _StayCohesive - list of sheep_
+   - _Align - list of sheep_
+   - _Separation - list of sheep_
+- Obstacles - _Screen bounds, Dog_
+- Seperation - _Separates from other Sheep_
+   
+#### State Transistions
+
+- _If a Dog is detected within range_
+
+### _State 3: Seek_
+
+**Objective:** _Sheep will seek if in range of a Food._
+
+#### Steering Behaviors
+
+- Seek, Cohesion, Align, and Separation_
+   - _Flee - Food in range_
+   - _StayCohesive - list of sheep_
+   - _Align - list of sheep_
+   - _Separation - list of sheep_
+- Obstacles - _Screen bounds_
+- Seperation - _Separates from other Sheep_
+   
+#### State Transistions
+
+- _If a Food is detected within range_
 
 ## _Dog_
 
 _The dog is an agent that will move in a direction that is straight to the closest Marker. If there are any sheep within that distance,
 they will flee from the Dog. However, the Dog will stop before it touches any sheep._
 
-### _State 1 Name_
+### _State 1: Seek_
 
-**Objective:** _A brief explanation of this state's objective._
-
-#### Steering Behaviors
-
-- _List all behaviors used by this state_
-- Obstacles - _List all obstacle types this state avoids_
-- Seperation - _List all agents this state seperates from_
-   
-#### State Transistions
-
-- _List all the ways this agent can transition to this state_
-   
-### _State 2 Name_
-
-**Objective:** _A brief explanation of this state's objective._
+**Objective:** _The Dog will seek a marker within range._
 
 #### Steering Behaviors
 
-- _List all behaviors used by this state_
-- Obstacles - _List all obstacle types this state avoids_
-- Seperation - _List all agents this state seperates from_
+- _Seek_
+   - _Seek - Marker in range_
+- Obstacles - _Screen bounds_
+- Seperation - _None_
    
 #### State Transistions
 
-- _List all the ways this agent can transition to this state_
+- _If a Marker is placed within range_
+   
+### _State 2: Flee_
+
+**Objective:** _Dog's will flee away from fences - higher weight than them seeking Markers._
+
+#### Steering Behaviors
+
+- _Flee - if a fence is in range_
+- Obstacles - _Fences_
+- Seperation - _None_
+   
+#### State Transistions
+
+- _If a fence is within range_
 
 ## Sources
 
