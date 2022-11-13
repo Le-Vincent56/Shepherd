@@ -126,7 +126,7 @@ they will flee from the Dog. However, the Dog will stop before it touches any sh
 
 ## Make it Your Own
 
-- _Added a third agent: Food, which will be used to attract sheep_
+- _Added obstacles such as Markers and Food that will be used to attract Dogs and Sheep respectively._
 - _Create multiple levels so that there is a "completion" to the game_
 
 ## Known Issues
