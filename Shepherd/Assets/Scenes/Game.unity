@@ -239,6 +239,7 @@ MonoBehaviour:
   sheepPrefab: {fileID: -1568574308799217381, guid: ca0c2d838d321844897faae31cb75f05, type: 3}
   sheepSpawnCount: 10
   dogPrefab: {fileID: 2775891513246837947, guid: 9cb550e7db5096647aec4271c0127835, type: 3}
+  dogSpawnCount: 1
 --- !u!4 &1381712147
 Transform:
   m_ObjectHideFlags: 0
