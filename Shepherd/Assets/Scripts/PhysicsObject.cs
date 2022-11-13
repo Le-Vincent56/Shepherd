@@ -15,6 +15,7 @@ public class PhysicsObject : MonoBehaviour
     // Physics Properties
     public Vector3 Position { get { return position; } }
     public Vector3 Velocity { get { return velocity; } }
+    public Vector3 Direction { get { return direction; } }
 
     // Friction Fields
     public bool applyFriction = false;
@@ -34,6 +35,7 @@ public class PhysicsObject : MonoBehaviour
     [SerializeField] Camera cam;
     public float camHeight;
     public float camWidth;
+    public Vector2 WorldSize;
     #endregion
 
     // Start is called before the first frame update
@@ -46,8 +48,10 @@ public class PhysicsObject : MonoBehaviour
         radius = (GetComponent<SpriteRenderer>().bounds.max - GetComponent<SpriteRenderer>().bounds.center).magnitude;
 
         // Set Camera bounds
+        cam = Camera.main;
         camHeight = cam.orthographicSize;
         camWidth = camHeight * cam.aspect;
+        WorldSize = new Vector2(camWidth, camHeight);
     }
 
     // Update is called once per frame
@@ -68,14 +72,17 @@ public class PhysicsObject : MonoBehaviour
         // Calculate the velocity for this frame
         velocity += acceleration * Time.deltaTime;
 
-        Bounce();
+        // Bounce();
 
         position += velocity * Time.deltaTime;
 
-        // Calculate current direction from velocity
-        direction = velocity.normalized;
+        if (velocity.sqrMagnitude > Mathf.Epsilon)
+        {
+            // Calculate current direction from velocity
+            direction = velocity.normalized;
+        }
 
-        if(direction != Vector3.zero)
+        if (direction != Vector3.zero)
         {
             transform.rotation = Quaternion.LookRotation(Vector3.back, direction);
         }
