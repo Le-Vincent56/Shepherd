@@ -5,15 +5,24 @@ using UnityEngine;
 public class AgentManager : MonoBehaviour
 {
     #region FIELDS
+    [Header("Sheep Management")]
     [SerializeField] Sheep sheepPrefab;
     private List<Sheep> sheep = new List<Sheep>();
     public List<Sheep> Sheep { get { return sheep; } }
     [SerializeField] int sheepSpawnCount;
+    [Space(20)]
 
+    [Header("Dog Management")]
     [SerializeField] Dog dogPrefab;
     private List<Dog> dogs = new List<Dog>();
     public List<Dog> Dogs { get { return dogs; } }
     [SerializeField] int dogSpawnCount;
+    [Space(20)]
+
+    [Header("Obstacle Management")]
+    [SerializeField] Obstacle obstaclePrefab;
+    [SerializeField] List<Obstacle> obstacles = new List<Obstacle>();
+    public List<Obstacle> Obstacles { get { return obstacles; } }
     #endregion
 
     // Start is called before the first frame update

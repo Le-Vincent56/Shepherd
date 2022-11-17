@@ -13,9 +13,12 @@ public class Sheep : Agent
 {
     #region FIELDS
     // Sheep State
+    [Header("Sheep State")]
     [SerializeField] SheepState currentState;
+    [Space(20)]
 
     // Wander Variables
+    [Header("Wander Variables")]
     [SerializeField] float wanderAngle = 15f;
     [SerializeField] float maxWanderAngle = 45f;
     [SerializeField] float maxWanderChangePerSecond = 3f;
@@ -30,8 +33,9 @@ public class Sheep : Agent
                 totalForce += StayCohesive(agentManager.Sheep, 2);
                 totalForce += Align(agentManager.Sheep);
                 totalForce += StayInBounds(PhysicsObject.WorldSize);
-                Separation(agentManager.Sheep);
-                Separation(agentManager.Dogs);
+                totalForce += Separation(agentManager.Sheep);
+                totalForce += Separation(agentManager.Dogs);
+                totalForce += AvoidObstacle();
                 break;
 
             case SheepState.Flee:
@@ -58,5 +62,32 @@ public class Sheep : Agent
         }
 
         currentState = newState;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        #region OBSTACLE AVOIDANCE
+        Gizmos.color = Color.red;
+        foreach(Vector3 pos in tempObsPos)
+        {
+            Gizmos.DrawLine(PhysicsObject.Position, pos);
+        }
+
+        // Draw safe zone box
+        Gizmos.color = Color.green;
+
+        // Set the center of the agent's future position
+        Vector3 futurePos = GetFuturePosition(avoidMaxRange);
+        float avoidMaxDist = Vector3.Magnitude(futurePos - PhysicsObject.Position);
+        avoidMaxDist += avoidRadius;
+
+        // Transition to LocalSpace
+        Gizmos.matrix = transform.localToWorldMatrix;
+        Gizmos.DrawWireCube(new Vector3(0, avoidMaxDist / 2f, 0), 
+                            new Vector3(avoidRadius * 2f, avoidMaxDist, avoidRadius));
+
+        // Return back to WorldSpace
+        Gizmos.matrix = Matrix4x4.identity;
+        #endregion
     }
 }
