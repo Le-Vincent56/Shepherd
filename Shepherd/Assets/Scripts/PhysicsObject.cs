@@ -9,7 +9,7 @@ public class PhysicsObject : MonoBehaviour
     [SerializeField] Vector3 position = Vector3.zero;
     [SerializeField] Vector3 direction = Vector3.right;
     [SerializeField] Vector3 velocity = Vector3.zero;
-    [SerializeField] Vector3 acceleration;
+    [SerializeField] Vector3 acceleration = Vector3.zero;
     public float mass = 1f;
 
     // Physics Properties
@@ -72,8 +72,6 @@ public class PhysicsObject : MonoBehaviour
         // Calculate the velocity for this frame
         velocity += acceleration * Time.deltaTime;
 
-        // Bounce();
-
         position += velocity * Time.deltaTime;
 
         if (velocity.sqrMagnitude > Mathf.Epsilon)
@@ -82,11 +80,11 @@ public class PhysicsObject : MonoBehaviour
             direction = velocity.normalized;
         }
 
-        // Rotate towards the velocity
-        transform.rotation = Quaternion.LookRotation(Vector3.back, velocity);
-
         // Draw movement
         transform.position = position;
+
+        // Rotate towards the velocity
+        transform.rotation = Quaternion.LookRotation(Vector3.back, direction);
 
         // Zero out acceleration
         acceleration = Vector3.zero;

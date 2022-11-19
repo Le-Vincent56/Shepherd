@@ -23,7 +23,7 @@ public abstract class Agent : MonoBehaviour
     [Space(20)]
 
     [Header("Obstacle Avoidance")]
-    protected List<Vector3> tempObsPos = new List<Vector3>();
+    [SerializeField] protected List<Vector3> tempObsPos = new List<Vector3>();
     [SerializeField] protected float avoidMaxRange = 1.5f;
     [SerializeField] protected float avoidRadius = 0.05f;
     #endregion
@@ -212,7 +212,7 @@ public abstract class Agent : MonoBehaviour
         return Vector3.zero; 
     }
 
-    protected Vector3 AvoidObstacle()
+    protected Vector3 AvoidObstacles(float weight = 1f)
     {
         // Set an avoidance force
         Vector3 avoidForce = Vector3.zero;
@@ -232,22 +232,26 @@ public abstract class Agent : MonoBehaviour
         // Clear the list for the new frame
         tempObsPos.Clear();
 
-        foreach(Obstacle obstacle in agentManager.Obstacles)
+        foreach (Obstacle obstacle in agentManager.Obstacles)
         {
             // Calculate the vector from the agent to the obstacle
             vectorToObs = obstacle.Position - PhysicsObject.Position;
 
             // Calculate the forward dot product
-            dotForward = Vector3.Dot(vectorToObs, PhysicsObject.Velocity.normalized);
+            dotForward = Vector3.Dot(PhysicsObject.Velocity.normalized, vectorToObs);
+
+            Debug.Log("Forward Dot: " + dotForward);
+            Debug.Log("Forward Dot Squared: " + Mathf.Pow(dotForward, 2));
+            Debug.Log("Max Sqr Dist: " + avoidMaxSqrDist);
 
             // Check if the obstacle is within the forward-facing box
-            if(dotForward > 0 && Mathf.Pow(dotForward, 2) < avoidMaxSqrDist)
+            if (dotForward > 0 && dotForward < avoidMaxSqrDist)
             {
                 // Calculate the right dot product
-                dotRight = Vector3.Dot(vectorToObs, transform.right);
+                dotRight = Vector3.Dot(transform.right, vectorToObs);
 
                 // Check if the obstacle is within the box bounds
-                if(Mathf.Abs(dotRight) < avoidRadius + obstacle.radius)
+                if (Mathf.Abs(dotRight) < avoidRadius + obstacle.radius)
                 {
                     tempObsPos.Add(obstacle.Position);
 
@@ -265,6 +269,6 @@ public abstract class Agent : MonoBehaviour
             }
         }
 
-        return avoidForce;
+        return avoidForce * weight;
     }
 }
