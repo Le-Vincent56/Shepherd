@@ -6,17 +6,26 @@ public abstract class Agent : MonoBehaviour
 {
     #region FIELDS
     private PhysicsObject physObj;
+    protected AgentManager agentManager;
     public PhysicsObject PhysicsObject { get { return physObj; } }
 
-    public Vector3 totalForce = Vector3.zero;
+    [SerializeField] protected Vector3 totalForce = Vector3.zero;
 
+    [Header("Max Parameters")]
     [SerializeField] float maxSpeed = 5f;
     public float MaxSpeed { get { return maxSpeed; } }
-
     [SerializeField] float maxForce = 5f;
+    public float MaxForce { get { return maxForce; } }
+    [Space(20)]
 
-    protected AgentManager agentManager;
-    float personalSpace = 1f;
+    [Header("Separation")]
+    [SerializeField] float personalSpace = 1f;
+    [Space(20)]
+
+    [Header("Obstacle Avoidance")]
+    protected List<Vector3> tempObsPos = new List<Vector3>();
+    [SerializeField] protected float avoidMaxRange = 1.5f;
+    [SerializeField] protected float avoidRadius = 0.05f;
     #endregion
 
     // Start is called before the first frame update
@@ -101,8 +110,9 @@ public abstract class Agent : MonoBehaviour
     /// </summary>
     /// <param name="neighbors">The list of agents</param>
     /// <returns>A separation force that steers the agent proportionally away from agents depending on how close they are</returns>
-    protected void Separation<T>(List<T> neighbors) where T : Agent
+    protected Vector3 Separation<T>(List<T> neighbors) where T : Agent
     {
+        Vector3 separateForce = Vector3.zero;
         float sqrPersonalSpace = Mathf.Pow(personalSpace, 2);
 
         // Loop hrough all the other agents
@@ -119,9 +129,12 @@ public abstract class Agent : MonoBehaviour
             if (sqrDist < sqrPersonalSpace)
             {
                 float weight = sqrPersonalSpace / (sqrDist + 0.1f);
-                totalForce += Flee(other.PhysicsObject.Position, weight);
+                separateForce += Flee(other.PhysicsObject.Position, weight);
             }
         }
+
+        // Return the force
+        return separateForce;
     }
 
     /// <summary>
@@ -197,5 +210,61 @@ public abstract class Agent : MonoBehaviour
 
         // If not out of bounds, don't change force
         return Vector3.zero; 
+    }
+
+    protected Vector3 AvoidObstacle()
+    {
+        // Set an avoidance force
+        Vector3 avoidForce = Vector3.zero;
+
+        // Set a vector from the agent to the obstacle
+        Vector3 vectorToObs = Vector3.zero;
+
+        // Store dot products
+        float dotForward;
+        float dotRight;
+
+        // Set the center of the agent's future position
+        Vector3 futurePos = GetFuturePosition(avoidMaxRange);
+        float avoidMaxSqrDist = Vector3.SqrMagnitude(futurePos - PhysicsObject.Position);
+        avoidMaxSqrDist += avoidRadius;
+
+        // Clear the list for the new frame
+        tempObsPos.Clear();
+
+        foreach(Obstacle obstacle in agentManager.Obstacles)
+        {
+            // Calculate the vector from the agent to the obstacle
+            vectorToObs = obstacle.Position - PhysicsObject.Position;
+
+            // Calculate the forward dot product
+            dotForward = Vector3.Dot(vectorToObs, PhysicsObject.Velocity.normalized);
+
+            // Check if the obstacle is within the forward-facing box
+            if(dotForward > 0 && Mathf.Pow(dotForward, 2) < avoidMaxSqrDist)
+            {
+                // Calculate the right dot product
+                dotRight = Vector3.Dot(vectorToObs, transform.right);
+
+                // Check if the obstacle is within the box bounds
+                if(Mathf.Abs(dotRight) < avoidRadius + obstacle.radius)
+                {
+                    tempObsPos.Add(obstacle.Position);
+
+                    if (dotRight > 0)
+                    {
+                        // Turn left
+                        avoidForce += -transform.right * maxSpeed * (1f / dotForward);
+                    }
+                    else
+                    {
+                        // Turn right
+                        avoidForce += transform.right * maxSpeed * (1f / dotForward);
+                    }
+                }
+            }
+        }
+
+        return avoidForce;
     }
 }

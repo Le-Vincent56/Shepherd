@@ -82,10 +82,8 @@ public class PhysicsObject : MonoBehaviour
             direction = velocity.normalized;
         }
 
-        if (direction != Vector3.zero)
-        {
-            transform.rotation = Quaternion.LookRotation(Vector3.back, direction);
-        }
+        // Rotate towards the velocity
+        transform.rotation = Quaternion.LookRotation(Vector3.back, velocity);
 
         // Draw movement
         transform.position = position;
