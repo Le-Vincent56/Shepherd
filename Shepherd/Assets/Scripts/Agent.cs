@@ -240,12 +240,8 @@ public abstract class Agent : MonoBehaviour
             // Calculate the forward dot product
             dotForward = Vector3.Dot(PhysicsObject.Velocity.normalized, vectorToObs);
 
-            Debug.Log("Forward Dot: " + dotForward);
-            Debug.Log("Forward Dot Squared: " + Mathf.Pow(dotForward, 2));
-            Debug.Log("Max Sqr Dist: " + avoidMaxSqrDist);
-
             // Check if the obstacle is within the forward-facing box
-            if (dotForward > 0 && dotForward < avoidMaxSqrDist)
+            if (dotForward > 0 && dotForward * dotForward < avoidMaxSqrDist)
             {
                 // Calculate the right dot product
                 dotRight = Vector3.Dot(transform.right, vectorToObs);
