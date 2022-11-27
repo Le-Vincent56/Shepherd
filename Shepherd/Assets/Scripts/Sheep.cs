@@ -32,10 +32,10 @@ public class Sheep : Agent
                 totalForce += Wander(maxWanderChangePerSecond, wanderAngle, maxWanderAngle);
                 totalForce += StayCohesive(agentManager.Sheep, 2f);
                 totalForce += Align(agentManager.Sheep);
+                totalForce += AvoidObstacles();
                 totalForce += StayInBounds(PhysicsObject.WorldSize);
                 totalForce += Separation(agentManager.Sheep);
                 totalForce += Separation(agentManager.Dogs);
-                totalForce += AvoidObstacles(10f);
                 break;
 
             case SheepState.Flee:
