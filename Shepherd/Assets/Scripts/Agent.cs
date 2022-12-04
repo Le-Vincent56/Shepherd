@@ -7,14 +7,15 @@ public abstract class Agent : MonoBehaviour
     #region FIELDS
     private PhysicsObject physObj;
     protected AgentManager agentManager;
-    public PhysicsObject PhysicsObject { get { return physObj; } }
+    protected FoodManager foodManager;
+    public PhysicsObject PhysicsObject { get { return physObj; } set { physObj = value; } }
 
     [SerializeField] protected Vector3 totalForce = Vector3.zero;
 
     [Header("Max Parameters")]
     [SerializeField] float maxSpeed = 5f;
     public float MaxSpeed { get { return maxSpeed; } }
-    [SerializeField] float maxForce = 5f;
+    [SerializeField] protected float maxForce = 5f;
     public float MaxForce { get { return maxForce; } }
     [Space(20)]
 
@@ -32,6 +33,7 @@ public abstract class Agent : MonoBehaviour
     void Start()
     {
         physObj = GetComponent<PhysicsObject>();
+        foodManager = GameObject.Find("Food Manager").GetComponent<FoodManager>();
     }
 
     // Update is called once per frame
@@ -63,6 +65,22 @@ public abstract class Agent : MonoBehaviour
         return seekingForce * weight;
     }
 
+    protected Vector3 Seek<T>(List<T> food, float weight = 1f) where T : Food
+    {
+        Vector3 seekingForce = Vector3.zero;
+        foreach(Food foodObject in food)
+        {
+            // Calculate desired velocity and scale by max speed
+            Vector3 desiredVelocity = foodObject.Position - PhysicsObject.Position;
+            desiredVelocity = desiredVelocity.normalized * maxSpeed;
+
+            // Calculate and return steering force
+            seekingForce += desiredVelocity - PhysicsObject.Velocity;
+        }
+        
+        return seekingForce * weight;
+    }
+
     public void Init(AgentManager agentManagerRef)
     {
         agentManager = agentManagerRef;
@@ -81,6 +99,31 @@ public abstract class Agent : MonoBehaviour
 
         // Calculate and return steering force
         Vector3 fleeingForce = desiredVelocity - PhysicsObject.Velocity;
+        return fleeingForce * weight;
+    }
+
+    /// <summary>
+    /// Flee from a list of Agents
+    /// </summary>
+    /// <param name="target">The list of agents to flee from</param>
+    /// <param name="weight"></param>
+    /// <returns></returns>
+    protected Vector3 Flee<T>(List<T> agents, float weight = 1f) where T : Agent
+    {
+        Vector3 fleeingForce = Vector3.zero;
+
+        // Calculate steering forces for each agent to flee from
+        foreach(T agent in agents)
+        {
+            // Calculate desired velocity and scale by max speed
+            Vector3 desiredVelocity = PhysicsObject.Position - agent.PhysicsObject.Position;
+            desiredVelocity = desiredVelocity.normalized * maxSpeed;
+
+            // Add the steering force to the total
+            fleeingForce += desiredVelocity - PhysicsObject.Velocity;
+        }
+
+        // Return the steering force
         return fleeingForce * weight;
     }
 
