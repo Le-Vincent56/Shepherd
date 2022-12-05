@@ -45,7 +45,8 @@ public class Food : MonoBehaviour
                 break;
 
             case FoodState.Placed:
-                // Start countdown
+                // Set position and start countdown
+                position = transform.position;
                 duration -= Time.deltaTime;
                 break;
         }

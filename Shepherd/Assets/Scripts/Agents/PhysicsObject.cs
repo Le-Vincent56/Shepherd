@@ -5,37 +5,47 @@ using UnityEngine;
 public class PhysicsObject : MonoBehaviour
 {
     #region FIELDS
-    // Physics Fields
+    [Header("Camera")]
+    [SerializeField] Camera cam;
+    public float camHeight;
+    public float camWidth;
+    public Vector2 WorldSize;
+    [Space(20)]
+
+    [Header("Physics Vectors and Mass")]
     [SerializeField] Vector3 position = Vector3.zero;
     [SerializeField] Vector3 direction = Vector3.right;
     [SerializeField] Vector3 velocity = Vector3.zero;
     [SerializeField] Vector3 acceleration = Vector3.zero;
     public float mass = 1f;
+    [Space(20)]
+
+    [Header("Friction")]
+    public bool applyFriction = false;
+    public float coeffOfFriction = 0.05f;
+    [Space(20)]
+
+    [Header("Gravity")]
+    public bool applyGravity = false;
+    public float strengthOfGravity = -1f;
+    [Space(20)]
+
+    [Header("Collision Radius")]
+    [SerializeField] float radius;
+
+    [Header("Apply Physics")]
+    [SerializeField] bool applyPhysics = true;
 
     // Physics Properties
     public Vector3 Position { get { return position; } }
     public Vector3 Velocity { get { return velocity; } }
     public Vector3 Direction { get { return direction; } }
 
-    // Friction Fields
-    public bool applyFriction = false;
-    public float coeffOfFriction = 0.05f;
-
-    // Gravity Fields
-    public bool applyGravity = false;
-    public float strengthOfGravity = -1f;
-
-    // Collision Fields
-    float radius;
-
     // Collision Properties
     public float Radius { get { return radius; } }
 
-    // Camera
-    [SerializeField] Camera cam;
-    public float camHeight;
-    public float camWidth;
-    public Vector2 WorldSize;
+    // Apply Physics Properties
+    public bool ApplyPhysics { get { return applyPhysics; } set { applyPhysics = value; } }
     #endregion
 
     // Start is called before the first frame update
@@ -57,37 +67,40 @@ public class PhysicsObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        position = transform.position;
-
-        if (applyFriction)
+        if(applyPhysics)
         {
-            ApplyFriction();
+            position = transform.position;
+
+            if (applyFriction)
+            {
+                ApplyFriction();
+            }
+
+            if (applyGravity)
+            {
+                ApplyGravity();
+            }
+
+            // Calculate the velocity for this frame
+            velocity += acceleration * Time.deltaTime;
+
+            position += velocity * Time.deltaTime;
+
+            if (velocity.sqrMagnitude > Mathf.Epsilon)
+            {
+                // Calculate current direction from velocity
+                direction = velocity.normalized;
+            }
+
+            // Draw movement
+            transform.position = position;
+
+            // Rotate towards the velocity
+            transform.rotation = Quaternion.LookRotation(Vector3.back, direction);
+
+            // Zero out acceleration
+            acceleration = Vector3.zero;
         }
-
-        if (applyGravity)
-        {
-            ApplyGravity();
-        }
-
-        // Calculate the velocity for this frame
-        velocity += acceleration * Time.deltaTime;
-
-        position += velocity * Time.deltaTime;
-
-        if (velocity.sqrMagnitude > Mathf.Epsilon)
-        {
-            // Calculate current direction from velocity
-            direction = velocity.normalized;
-        }
-
-        // Draw movement
-        transform.position = position;
-
-        // Rotate towards the velocity
-        transform.rotation = Quaternion.LookRotation(Vector3.back, direction);
-
-        // Zero out acceleration
-        acceleration = Vector3.zero;
     }
 
     public void ApplyForce(Vector3 force)

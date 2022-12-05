@@ -13,17 +13,22 @@ public class AgentManager : MonoBehaviour
 {
     #region FIELDS
     private Camera cam;
+    private Goal goal;
 
     [Header("Sheep Management")]
     [SerializeField] Sheep sheepPrefab;
-    private List<Sheep> sheep = new List<Sheep>();
+    [SerializeField] private List<Sheep> sheep = new List<Sheep>();
     public List<Sheep> Sheep { get { return sheep; } }
     [SerializeField] int sheepSpawnCount;
+    [SerializeField] float spawnMinX = -1f;
+    [SerializeField] float spawnMaxX = 1f;
+    [SerializeField] float spawnMinY = -1f;
+    [SerializeField] float spawnMaxY = 1f;
     [Space(20)]
 
     [Header("Dog Management")]
     [SerializeField] Dog dogPrefab;
-    private List<Dog> dogs = new List<Dog>();
+    [SerializeField] private List<Dog> dogs = new List<Dog>();
     private List<Dog> inactiveDogs = new List<Dog>();
     public List<Dog> Dogs { get { return dogs; } }
     [SerializeField] int dogSpawnCount;
@@ -31,6 +36,8 @@ public class AgentManager : MonoBehaviour
     Dog tempDog = null;
     private bool prefabSelected = false;
     private bool finalizedPlacement = false;
+    [SerializeField] float dogMax = 5;
+    [SerializeField] float dogsPlaced = 0;
     [Space(20)]
 
     [Header("Obstacle Management")]
@@ -42,12 +49,13 @@ public class AgentManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        goal = GameObject.Find("Goal").GetComponent<Goal>();
         cam = Camera.main;
 
         #region SHEEP SPAWNING
         for (int i = 0; i < sheepSpawnCount; i++)
         {
-            Vector3 randPos = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0);
+            Vector3 randPos = new Vector3(Random.Range(spawnMinX, spawnMaxX), Random.Range(spawnMinY, spawnMaxY), 0);
             sheep.Add(Instantiate(sheepPrefab, randPos, Quaternion.identity));
             sheep[i].Init(this);
             sheep[i].ChangeStateTo(SheepState.Wander);
@@ -75,12 +83,15 @@ public class AgentManager : MonoBehaviour
 
                 if (finalizedPlacement)
                 {
-                    // Instantiate the food and add it to the list
+                    // Instantiate the Dog and add it to the list
                     dogs.Add(Instantiate(dogPrefab, new Vector3(cam.ScreenToWorldPoint(new Vector3(Mouse.current.position.ReadValue().x, Mouse.current.position.ReadValue().y, 0)).x,
                                                                     cam.ScreenToWorldPoint(new Vector3(Mouse.current.position.ReadValue().x, Mouse.current.position.ReadValue().y, 0)).y, 0),
                                                                     Quaternion.identity));
 
-                    // Set the food to the Placed state
+                    // Increment the total amount of Dogs placed
+                    dogsPlaced++;
+
+                    // Set the Dog to the Placed state
                     dogs[dogs.Count - 1].ChangePlacingStateTo(DogPlacedState.Placed);
 
                     // Set finalizedPlacement to false
@@ -89,7 +100,7 @@ public class AgentManager : MonoBehaviour
                     // Set prefabSelected to false
                     prefabSelected = false;
 
-                    // Reset tempFood
+                    // Reset tempDog
                     Destroy(tempDog.gameObject);
                     tempDog = null;
 
@@ -99,7 +110,7 @@ public class AgentManager : MonoBehaviour
                 break;
         }
 
-        // Check for inactive foods and add them to the inactive list
+        // Check for inactive dogs and add them to the inactive list
         foreach (Dog dog in dogs)
         {
             if (dog.Duration <= 0)
@@ -108,8 +119,12 @@ public class AgentManager : MonoBehaviour
             }
         }
 
-        // Remove inactive foods
+        // Remove inactive dogs
         RemoveInactiveDogs();
+        #endregion
+
+        #region Penned Sheep
+        RemovePennedSheep();
         #endregion
     }
 
@@ -138,19 +153,44 @@ public class AgentManager : MonoBehaviour
         }
     }
 
+    public void RemovePennedSheep()
+    {
+        // Check the list of inactive dogs
+        if (goal.PennedSheep.Count > 0)
+        {
+            // Compare the list of inactive dogs with the total dogs
+            for (int i = 0; i < goal.PennedSheep.Count; i++)
+            {
+                for (int j = 0; j < Sheep.Count; j++)
+                {
+                    // If any of the inactive dogs are equal to any of the active dogs
+                    // in dogs, remove them from the list
+                    if (goal.PennedSheep[i].Equals(Sheep[j]))
+                    {
+                        Sheep.Remove(goal.PennedSheep[i]);
+                    }
+                }
+            }
+        }
+    }
+
     public void OnClick()
     {
-        switch (currentDMState)
+        // Check if the player can place a Dog
+        if(dogsPlaced < dogMax)
         {
-            case DMState.Idle:
-                // Change currentState to Selected
-                currentDMState = DMState.Selected;
-                break;
+            switch (currentDMState)
+            {
+                case DMState.Idle:
+                    // Change currentState to Selected
+                    currentDMState = DMState.Selected;
+                    break;
 
-            case DMState.Selected:
-                // Change currentState to Idle
-                currentDMState = DMState.Idle;
-                break;
+                case DMState.Selected:
+                    // Change currentState to Idle
+                    currentDMState = DMState.Idle;
+                    break;
+            }
         }
     }
 

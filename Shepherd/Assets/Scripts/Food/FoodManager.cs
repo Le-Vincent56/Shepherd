@@ -17,6 +17,8 @@ public class FoodManager : MonoBehaviour
     [SerializeField] Food foodPrefab;
     [SerializeField] List<Food> food = new List<Food>();
     [SerializeField] List<Food> inactiveFood = new List<Food>();
+    [SerializeField] float foodMax = 5;
+    [SerializeField] float foodPlaced = 0;
     public List<Food> Food { get { return food; } }
     Food tempFood = null;
 
@@ -39,20 +41,25 @@ public class FoodManager : MonoBehaviour
                 break;
 
             case FMState.Selected:
-                if(!prefabSelected)
+                // Check if the prefab is selected, if so, then instantiate a new Food as tempFood
+                if (!prefabSelected)
                 {
                     tempFood = Instantiate(foodPrefab, new Vector3(cam.ScreenToWorldPoint(new Vector3(Mouse.current.position.ReadValue().x, Mouse.current.position.ReadValue().y, 0)).x,
                                                                     cam.ScreenToWorldPoint(new Vector3(Mouse.current.position.ReadValue().x, Mouse.current.position.ReadValue().y, 0)).y, 0), Quaternion.identity);
                     prefabSelected = true;
                 }
 
+                // Check if placement if finalized
                 if (finalizedPlacement)
                 {
-                    // Instantiate the food and add it to the list
+                    // Instantiate the Food and add it to the list
                     food.Add(Instantiate(foodPrefab, new Vector3(cam.ScreenToWorldPoint(new Vector3(Mouse.current.position.ReadValue().x, Mouse.current.position.ReadValue().y, 0)).x, 
                                                                     cam.ScreenToWorldPoint(new Vector3(Mouse.current.position.ReadValue().x, Mouse.current.position.ReadValue().y, 0)).y, 0), Quaternion.identity));
 
-                    // Set the food to the Placed state
+                    // Increment the total amount of Food placed
+                    foodPlaced++;
+
+                    // Set the Food to the Placed state
                     food[food.Count - 1].ChangeStateTo(FoodState.Placed);
 
                     // Set finalizedPlacement to false
@@ -111,17 +118,21 @@ public class FoodManager : MonoBehaviour
 
     public void OnClick()
     {
-        switch(currentState)
+        // Check if the player can place any more food
+        if(foodPlaced < foodMax)
         {
-            case FMState.Idle:
-                // Change currentState to Selected
-                currentState = FMState.Selected;
-                break;
+            switch (currentState)
+            {
+                case FMState.Idle:
+                    // Change currentState to Selected
+                    currentState = FMState.Selected;
+                    break;
 
-            case FMState.Selected:
-                // Change currentState to Idle
-                currentState = FMState.Idle;
-                break;
+                case FMState.Selected:
+                    // Change currentState to Idle
+                    currentState = FMState.Idle;
+                    break;
+            }
         }
     }
 

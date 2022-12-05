@@ -13,8 +13,17 @@ public class Sheep : Agent
 {
     #region FIELDS
     // Sheep State
+    
+
     [Header("Sheep State")]
     [SerializeField] SheepState currentState;
+    [Space(20)]
+
+    [Header("Goal Timers")]
+    [SerializeField] float freezeTimer = 2f;
+    public float FreezeTimer { get { return freezeTimer; } }
+    [SerializeField] bool notInGoal = true;
+    public bool NotInGoal { get { return notInGoal; } set { notInGoal = value; } }
     [Space(20)]
 
     [Header("Range")]
@@ -33,21 +42,27 @@ public class Sheep : Agent
 
     void Update()
     {
-        // Calculate radial vector
-        float radiusX = PhysicsObject.Position.x + radius;
-        float radiusY = PhysicsObject.Position.y + radius;
-        Vector3 radialVect = new Vector3(radiusX, radiusY, 0);
+        if(!notInGoal)
+        {
+            freezeTimer -= Time.deltaTime;
+        }
 
-        AddToRange(radialVect);
-        CalcSteeringForces();
-        totalForce = Vector3.ClampMagnitude(totalForce, maxForce);
+        if(freezeTimer >= 0 && notInGoal)
+        {
+            // Check if anything is in range
+            AddToRange();
 
-        PhysicsObject.ApplyForce(totalForce);
+            // Calculate and apply steering forces
+            CalcSteeringForces();
+            totalForce = Vector3.ClampMagnitude(totalForce, maxForce);
+            PhysicsObject.ApplyForce(totalForce);
+            totalForce = Vector3.zero;
 
-        totalForce = Vector3.zero;
-        RemoveFromRange(radialVect);
-        RemoveInactiveDogs();
-        RemoveInactiveFood();
+            // Remove anything thats out of range
+            RemoveFromRange();
+            RemoveInactiveDogs();
+            RemoveInactiveFood();
+        }
     }
 
     public override void CalcSteeringForces()
@@ -125,7 +140,7 @@ public class Sheep : Agent
         }
     }
 
-    public void AddToRange(Vector3 radialVect)
+    public void AddToRange()
     {
         // Check Dogs
         foreach (Dog dog in agentManager.Dogs)
@@ -147,7 +162,7 @@ public class Sheep : Agent
             }
 
             // If the Dog is in range and not already in the list, add it to the nearbyDogs list
-            if ((dog.Position - PhysicsObject.Position).magnitude <= radialVect.magnitude && addDog)
+            if (Vector3.Distance(PhysicsObject.Position, dog.Position) <= radius && addDog)
             {
                 nearbyDogs.Add(dog);
             }
@@ -173,18 +188,18 @@ public class Sheep : Agent
             }
 
             // If the Food is in range and not already in the list, add it to the nearbyFood list
-            if((food.Position - PhysicsObject.Position).magnitude <= radialVect.magnitude && addFood)
+            if(Vector3.Distance(PhysicsObject.Position, food.Position) <= radius && addFood)
             {
                 nearbyFood.Add(food);
             }
         }
     }
 
-    public void RemoveFromRange(Vector3 radialVect)
+    public void RemoveFromRange()
     {
         foreach (Dog dog in nearbyDogs)
         {
-            if ((dog.Position - PhysicsObject.Position).magnitude > radialVect.magnitude || dog.Duration <= 0)
+            if (Vector3.Distance(PhysicsObject.Position, dog.Position) > radius|| dog.Duration <= 0)
             {
                 inactiveDogs.Add(dog);
             }
@@ -192,7 +207,7 @@ public class Sheep : Agent
 
         foreach (Food food in nearbyFood)
         {
-            if ((food.Position - PhysicsObject.Position).magnitude > radialVect.magnitude || food.Duration <= 0)
+            if (Vector3.Distance(PhysicsObject.Position, food.Position) > radius || food.Duration <= 0)
             {
                 inactiveFood.Add(food);
             }
@@ -201,16 +216,16 @@ public class Sheep : Agent
 
     public void RemoveInactiveDogs()
     {
-        // Check the list of inactive dogs
+        // Check the list of inactive Dogs
         if (inactiveDogs.Count > 0)
         {
-            // Compare the list of inactive dogs with the total dogs
+            // Compare the list of inactive Dogs with the total Dogs
             for (int i = 0; i < inactiveDogs.Count; i++)
             {
                 for (int j = 0; j < nearbyDogs.Count; j++)
                 {
-                    // If any of the inactive dogs are equal to any of the active dogs
-                    // in dogs, remove them from the list
+                    // If any of the inactive Dogs are equal to any of the active Dogs
+                    // in nearbyDogs, remove them from the list
                     if (inactiveDogs[i].Equals(nearbyDogs[j]))
                     {
                         nearbyDogs.Remove(inactiveDogs[i]);
@@ -218,23 +233,23 @@ public class Sheep : Agent
                 }
             }
 
-            // Clear the inactive dogs list
+            // Clear the inactiveDogs list
             inactiveDogs.Clear();
         }
     }
 
     public void RemoveInactiveFood()
     {
-        // Check the list of inactive food
+        // Check the list of inactive Food
         if (inactiveFood.Count > 0)
         {
-            // Compare the list of inactive foods with the total foods
+            // Compare the list of inactive Food with the total Food
             for (int i = 0; i < inactiveFood.Count; i++)
             {
                 for (int j = 0; j < nearbyFood.Count; j++)
                 {
-                    // If any of the inactive foods are equal to any of the placed foods
-                    // in food, remove them from the list
+                    // If any of the inactive Food are equal to any of the placed Food
+                    // in nearbyFood, remove them from the list
                     if (inactiveFood[i].Equals(nearbyFood[j]))
                     {
                         nearbyFood.Remove(inactiveFood[i]);
@@ -242,7 +257,7 @@ public class Sheep : Agent
                 }
             }
 
-            // Clear the inactive foods list
+            // Clear the inactiveFoods list
             inactiveFood.Clear();
         }
     }
@@ -270,6 +285,18 @@ public class Sheep : Agent
         #region RANGE GIZMOS
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(transform.position, radius);
+
+        Gizmos.color = Color.yellow;
+        foreach(Dog dog in nearbyDogs)
+        {
+            Gizmos.DrawLine(PhysicsObject.Position, dog.Position);
+        }
+
+        Gizmos.color = Color.blue;
+        foreach (Food food in nearbyFood)
+        {
+            Gizmos.DrawLine(PhysicsObject.Position, food.Position);
+        }
         #endregion
 
         #region OBSTACLE AVOIDANCE

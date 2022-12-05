@@ -8,6 +8,8 @@ public abstract class Agent : MonoBehaviour
     private PhysicsObject physObj;
     protected AgentManager agentManager;
     protected FoodManager foodManager;
+    protected MarkerManager markerManager;
+    protected ObstacleManager obstacleManager;
     public PhysicsObject PhysicsObject { get { return physObj; } set { physObj = value; } }
 
     [SerializeField] protected Vector3 totalForce = Vector3.zero;
@@ -34,6 +36,9 @@ public abstract class Agent : MonoBehaviour
     {
         physObj = GetComponent<PhysicsObject>();
         foodManager = GameObject.Find("Food Manager").GetComponent<FoodManager>();
+        agentManager = GameObject.Find("Agent Manager").GetComponent<AgentManager>();
+        markerManager = GameObject.Find("Marker Manager").GetComponent<MarkerManager>();
+        obstacleManager = GameObject.Find("Obstacles").GetComponent<ObstacleManager>();
     }
 
     // Update is called once per frame
@@ -65,10 +70,26 @@ public abstract class Agent : MonoBehaviour
         return seekingForce * weight;
     }
 
-    protected Vector3 Seek<T>(List<T> food, float weight = 1f) where T : Food
+    protected Vector3 Seek(List<Marker> markers, float weight = 1f)
     {
         Vector3 seekingForce = Vector3.zero;
-        foreach(Food foodObject in food)
+        foreach(Marker marker in markers)
+        {
+            // Calculate desired velocity and scale by max speed
+            Vector3 desiredVelocity = marker.Position - PhysicsObject.Position;
+            desiredVelocity = desiredVelocity.normalized * maxSpeed;
+
+            // Calculate and return steering force
+            seekingForce += desiredVelocity - PhysicsObject.Velocity;
+        }
+        
+        return seekingForce * weight;
+    }
+
+    protected Vector3 Seek(List<Food> food, float weight = 1f)
+    {
+        Vector3 seekingForce = Vector3.zero;
+        foreach (Food foodObject in food)
         {
             // Calculate desired velocity and scale by max speed
             Vector3 desiredVelocity = foodObject.Position - PhysicsObject.Position;
@@ -77,7 +98,7 @@ public abstract class Agent : MonoBehaviour
             // Calculate and return steering force
             seekingForce += desiredVelocity - PhysicsObject.Velocity;
         }
-        
+
         return seekingForce * weight;
     }
 
@@ -117,6 +138,25 @@ public abstract class Agent : MonoBehaviour
         {
             // Calculate desired velocity and scale by max speed
             Vector3 desiredVelocity = PhysicsObject.Position - agent.PhysicsObject.Position;
+            desiredVelocity = desiredVelocity.normalized * maxSpeed;
+
+            // Add the steering force to the total
+            fleeingForce += desiredVelocity - PhysicsObject.Velocity;
+        }
+
+        // Return the steering force
+        return fleeingForce * weight;
+    }
+
+    protected Vector3 Flee(List<Obstacle> obstacles, float weight = 1f)
+    {
+        Vector3 fleeingForce = Vector3.zero;
+
+        // Calculate steering forces for each agent to flee from
+        foreach (Obstacle obstacle in obstacles)
+        {
+            // Calculate desired velocity and scale by max speed
+            Vector3 desiredVelocity = PhysicsObject.Position - obstacle.Position;
             desiredVelocity = desiredVelocity.normalized * maxSpeed;
 
             // Add the steering force to the total
