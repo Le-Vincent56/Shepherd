@@ -144,6 +144,7 @@ they will flee from the Dog. However, the Dog will stop before it touches any sh
 
 - _Added obstacles such as Markers and Food that will be used to attract Dogs and Sheep respectively._
 - _Create multiple levels so that there is a "completion" to the game_
+- _Add a "Goal" that sheep can enter and then be "penned" - allows for not all sheep to have to be in the pen to win, but rather that the herd can be slowly thinned.
 
 ## Known Issues
 
