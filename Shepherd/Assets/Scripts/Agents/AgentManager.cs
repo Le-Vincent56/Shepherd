@@ -37,8 +37,12 @@ public class AgentManager : MonoBehaviour
     private bool prefabSelected = false;
     private bool finalizedPlacement = false;
     [SerializeField] float dogMax = 5;
+    public float MaxDogs { get { return dogMax; } }
     [SerializeField] float dogsPlaced = 0;
+    public float PlacedDogs { get { return dogsPlaced; } }
     [Space(20)]
+
+    
 
     [Header("Obstacle Management")]
     [SerializeField] Obstacle obstaclePrefab;
@@ -123,7 +127,7 @@ public class AgentManager : MonoBehaviour
         RemoveInactiveDogs();
         #endregion
 
-        #region Penned Sheep
+        #region PENNED SHEEP
         RemovePennedSheep();
         #endregion
     }

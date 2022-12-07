@@ -18,7 +18,9 @@ public class MarkerManager : MonoBehaviour
     [SerializeField] List<Marker> markers = new List<Marker>();
     [SerializeField] List<Marker> inactiveMarkers = new List<Marker>();
     [SerializeField] float markerMax = 5;
+    public float MaxMarkers { get { return markerMax; } }
     [SerializeField] float markersPlaced = 0;
+    public float PlacedMarkers { get { return markersPlaced; } }
     public List<Marker> Markers { get { return markers; } }
     Marker tempMarker = null;
 

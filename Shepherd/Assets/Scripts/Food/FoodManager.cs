@@ -20,6 +20,8 @@ public class FoodManager : MonoBehaviour
     [SerializeField] float foodMax = 5;
     [SerializeField] float foodPlaced = 0;
     public List<Food> Food { get { return food; } }
+    public float MaxFood { get { return foodMax; } }
+    public float PlacedFood { get { return foodPlaced; } }
     Food tempFood = null;
 
     private bool prefabSelected = false;

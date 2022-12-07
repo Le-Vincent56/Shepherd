@@ -75,7 +75,7 @@ public class Sheep : Agent
                 totalForce += StayCohesive(agentManager.Sheep, 2f);
                 totalForce += Align(agentManager.Sheep);
                 totalForce += AvoidObstacles();
-                totalForce += StayInBounds(PhysicsObject.WorldSize);
+                totalForce += StayInBounds(PhysicsObject.WorldSize, 5f);
                 totalForce += Separation(agentManager.Sheep);
 
                 #region CHANGE STATE CASES
@@ -98,7 +98,7 @@ public class Sheep : Agent
                 totalForce += StayCohesive(agentManager.Sheep, 2f);
                 totalForce += Align(agentManager.Sheep);
                 totalForce += AvoidObstacles();
-                totalForce += StayInBounds(PhysicsObject.WorldSize);
+                totalForce += StayInBounds(PhysicsObject.WorldSize, 5f);
                 totalForce += Separation(agentManager.Sheep);
 
                 #region CHANGE STATE CASES
@@ -121,7 +121,7 @@ public class Sheep : Agent
                 totalForce += StayCohesive(agentManager.Sheep, 2f);
                 totalForce += Align(agentManager.Sheep);
                 totalForce += AvoidObstacles();
-                totalForce += StayInBounds(PhysicsObject.WorldSize);
+                totalForce += StayInBounds(PhysicsObject.WorldSize, 5f);
                 totalForce += Separation(agentManager.Sheep);
 
                 #region CHANGE STATE CASES

@@ -6,6 +6,7 @@ public class Goal : MonoBehaviour
 {
     SpriteRenderer sprite;
     AgentManager agentManager;
+    LevelManager levelManager;
     [SerializeField] List<Sheep> pennedSheep = new List<Sheep>();
     public List<Sheep> PennedSheep { get { return pennedSheep; } set { pennedSheep = value; } }
 
@@ -14,6 +15,7 @@ public class Goal : MonoBehaviour
     {
         sprite = GetComponent<SpriteRenderer>();
         agentManager = GameObject.Find("Agent Manager").GetComponent<AgentManager>();
+        levelManager = GameObject.Find("Level Manager").GetComponent<LevelManager>();
     }
 
     // Update is called once per frame
@@ -54,7 +56,7 @@ public class Goal : MonoBehaviour
         // If all the sheep are in the goal, then win
         if(agentManager.Sheep.Count == pennedSheep.Count)
         {
-            // win
+            levelManager.ChangeLevel = true;
         }
     }
 
