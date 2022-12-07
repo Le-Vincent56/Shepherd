@@ -103,7 +103,8 @@ they will flee from the Dog. However, the Dog will stop before it touches any sh
    
 #### State Transistions
 
-- _If a Marker is placed within range_
+- _If a Marker is placed within range and there is not an Obstacle in range_
+- _If neither an Obstacle or a Marker is in range_
    
 ### _State 2: Flee_
 
@@ -113,11 +114,26 @@ they will flee from the Dog. However, the Dog will stop before it touches any sh
 
 - _Flee - if a fence is in range_
 - Obstacles - _Fences_
-- Seperation - _None_
+- Seperation - _Separates from Sheep_
    
 #### State Transistions
 
-- _If a fence is within range_
+- _If an Obstacle is within range_
+- _If neither an Obstacle or a Marker is in range_
+
+### _State 3: Freeze_
+
+**Objective:** _Dog's will stop all movement._
+
+#### Steering Behaviors
+
+- Obstacles - _Fences_
+- Seperation - _Separates from Sheep_
+   
+#### State Transistions
+
+- _If an Obstacle is within range_
+- _If a Marker is in range and there is not an obstacle in range_
 
 ## Sources
 
@@ -128,6 +144,7 @@ they will flee from the Dog. However, the Dog will stop before it touches any sh
 
 - _Added obstacles such as Markers and Food that will be used to attract Dogs and Sheep respectively._
 - _Create multiple levels so that there is a "completion" to the game_
+- _Add a "Goal" that sheep can enter and then be "penned" - allows for not all sheep to have to be in the pen to win, but rather that the herd can be slowly thinned.
 
 ## Known Issues
 
