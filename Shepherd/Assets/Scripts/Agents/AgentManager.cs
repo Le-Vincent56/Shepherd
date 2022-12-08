@@ -14,6 +14,7 @@ public class AgentManager : MonoBehaviour
     #region FIELDS
     private Camera cam;
     private Goal goal;
+    private PlacerManager placerManager;
 
     [Header("Sheep Management")]
     [SerializeField] Sheep sheepPrefab;
@@ -33,9 +34,12 @@ public class AgentManager : MonoBehaviour
     public List<Dog> Dogs { get { return dogs; } }
     [SerializeField] int dogSpawnCount;
     private DMState currentDMState;
-    Dog tempDog = null;
+    public DMState CurrentDMState { get { return currentDMState; } set { currentDMState = value; } }
+    public Dog tempDog = null;
     private bool prefabSelected = false;
+    public bool PrefabSelected { get { return prefabSelected; } set { prefabSelected = value; } }
     private bool finalizedPlacement = false;
+    public bool FinalizedPlacement { get { return finalizedPlacement; } set { finalizedPlacement = value; } }
     [SerializeField] float dogMax = 5;
     public float MaxDogs { get { return dogMax; } }
     [SerializeField] float dogsPlaced = 0;
@@ -55,6 +59,7 @@ public class AgentManager : MonoBehaviour
     {
         goal = GameObject.Find("Goal").GetComponent<Goal>();
         cam = Camera.main;
+        placerManager = GameObject.Find("Placer Manager").GetComponent<PlacerManager>();
 
         #region SHEEP SPAWNING
         for (int i = 0; i < sheepSpawnCount; i++)
@@ -180,6 +185,8 @@ public class AgentManager : MonoBehaviour
 
     public void OnClick()
     {
+        placerManager.currentType = PlaceType.Dog;
+
         // Check if the player can place a Dog
         if(dogsPlaced < dogMax)
         {
@@ -195,20 +202,6 @@ public class AgentManager : MonoBehaviour
                     currentDMState = DMState.Idle;
                     break;
             }
-        }
-    }
-
-    public void OnFire(InputAction.CallbackContext context)
-    {
-        switch (currentDMState)
-        {
-            case DMState.Idle:
-                break;
-
-            case DMState.Selected:
-                // Set finalized placement to true
-                finalizedPlacement = true;
-                break;
         }
     }
 }

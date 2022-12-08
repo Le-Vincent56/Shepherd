@@ -13,7 +13,9 @@ public class MarkerManager : MonoBehaviour
 {
     #region FIELDS
     private Camera cam;
-    public MMState currentState = MMState.Idle;
+    private PlacerManager placerManager;
+    private MMState currentState = MMState.Idle;
+    public MMState CurrentState { get { return currentState; } set { currentState = value; } }
     [SerializeField] Marker markerPrefab;
     [SerializeField] List<Marker> markers = new List<Marker>();
     [SerializeField] List<Marker> inactiveMarkers = new List<Marker>();
@@ -22,16 +24,19 @@ public class MarkerManager : MonoBehaviour
     [SerializeField] float markersPlaced = 0;
     public float PlacedMarkers { get { return markersPlaced; } }
     public List<Marker> Markers { get { return markers; } }
-    Marker tempMarker = null;
+    public Marker tempMarker = null;
 
     private bool prefabSelected = false;
+    public bool PrefabSelected { get { return prefabSelected; } set { prefabSelected = value; } }
     private bool finalizedPlacement = false;
+    public bool FinalizedPlacement { get { return finalizedPlacement; } set { finalizedPlacement = value; } }
     #endregion
 
     // Start is called before the first frame update
     void Start()
     {
         cam = Camera.main;
+        placerManager = GameObject.Find("Placer Manager").GetComponent<PlacerManager>();
     }
 
     // Update is called once per frame
@@ -120,6 +125,8 @@ public class MarkerManager : MonoBehaviour
 
     public void OnClick()
     {
+        placerManager.currentType = PlaceType.Marker;
+
         // Check if the player can place any more food
         if (markersPlaced < markerMax)
         {
@@ -135,20 +142,6 @@ public class MarkerManager : MonoBehaviour
                     currentState = MMState.Idle;
                     break;
             }
-        }
-    }
-
-    public void OnFire(InputAction.CallbackContext context)
-    {
-        switch (currentState)
-        {
-            case MMState.Idle:
-                break;
-
-            case MMState.Selected:
-                // Set finalized placement to true
-                finalizedPlacement = true;
-                break;
         }
     }
 }

@@ -32,7 +32,8 @@ public class Dog : Agent
     public float Duration { get { return duration; } }
 
     [Header("Range")]
-    [SerializeField] float radius = 3f;
+    [SerializeField] float obstacleRadius = 1.5f;
+    [SerializeField] float markerRadius = 5f;
     [SerializeField] List<Marker> nearbyMarkers = new List<Marker>();
     [SerializeField] List<Marker> inactiveMarkers = new List<Marker>();
     [SerializeField] List<Obstacle> nearbyObstacles = new List<Obstacle>();
@@ -170,7 +171,7 @@ public class Dog : Agent
             }
 
             // If the Marker is in range and not already in the list, add it to the nearbyMarkers list
-            if (Vector3.Distance(PhysicsObject.Position, marker.Position) <= radius && addMarker)
+            if (Vector3.Distance(PhysicsObject.Position, marker.Position) <= markerRadius && addMarker)
             {
                 nearbyMarkers.Add(marker);
             }
@@ -196,7 +197,7 @@ public class Dog : Agent
             }
 
             // If the Food is in range and not already in the list, add it to the nearbyFood list
-            if (Vector3.Distance(PhysicsObject.Position, obstacle.Position) <= radius && addObstacle)
+            if (Vector3.Distance(PhysicsObject.Position, obstacle.Position) <= obstacleRadius && addObstacle)
             {
                 nearbyObstacles.Add(obstacle);
             }
@@ -209,7 +210,7 @@ public class Dog : Agent
         foreach (Marker marker in nearbyMarkers)
         {
             // If they are no longer in range or their duration has run out, add them to inactiveMarkers
-            if (Vector3.Distance(PhysicsObject.Position, marker.Position) > radius || marker.Duration <= 0)
+            if (Vector3.Distance(PhysicsObject.Position, marker.Position) > markerRadius || marker.Duration <= 0)
             {
                 inactiveMarkers.Add(marker);
             }
@@ -219,7 +220,7 @@ public class Dog : Agent
         foreach (Obstacle obstacle in nearbyObstacles)
         {
             // If they are no longer in range, add them to inativeObstacles
-            if (Vector3.Distance(PhysicsObject.Position, obstacle.Position) > radius)
+            if (Vector3.Distance(PhysicsObject.Position, obstacle.Position) > obstacleRadius)
             {
                 inactiveObstacles.Add(obstacle);
             }

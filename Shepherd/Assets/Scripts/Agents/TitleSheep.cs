@@ -26,6 +26,11 @@ public class TitleSheep : MonoBehaviour
     [SerializeField] float maxWanderAngle = 45f;
     [SerializeField] float maxWanderChangePerSecond = 3f;
 
+    [Header("Obstacle Avoidance")]
+    [SerializeField] protected List<Vector3> tempObsPos = new List<Vector3>();
+    [SerializeField] protected float avoidMaxRange = 1.5f;
+    [SerializeField] protected float avoidRadius = 0.05f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,6 +54,7 @@ public class TitleSheep : MonoBehaviour
         totalForce += Wander(maxWanderChangePerSecond, wanderAngle, maxWanderAngle);
         totalForce += StayCohesive(titleSheepManager.TitleSheep, 2f);
         totalForce += Align(titleSheepManager.TitleSheep);
+        totalForce += AvoidObstacles();
         totalForce += StayInBounds(PhysicsObject.WorldSize);
         totalForce += Separation(titleSheepManager.TitleSheep);
     }
@@ -207,6 +213,62 @@ public class TitleSheep : MonoBehaviour
 
         // If not out of bounds, don't change force
         return Vector3.zero;
+    }
+
+    protected Vector3 AvoidObstacles(float weight = 1f)
+    {
+        // Set an avoidance force
+        Vector3 avoidForce = Vector3.zero;
+
+        // Set a vector from the agent to the obstacle
+        Vector3 vectorToObs = Vector3.zero;
+
+        // Store dot products
+        float dotForward;
+        float dotRight;
+
+        // Set the center of the agent's future position
+        Vector3 futurePos = GetFuturePosition(avoidMaxRange);
+        float avoidMaxSqrDist = Vector3.SqrMagnitude(futurePos - PhysicsObject.Position);
+        avoidMaxSqrDist += avoidRadius;
+
+        // Clear the list for the new frame
+        tempObsPos.Clear();
+
+        foreach (Obstacle obstacle in titleSheepManager.Obstacles)
+        {
+            // Calculate the vector from the agent to the obstacle
+            vectorToObs = obstacle.Position - PhysicsObject.Position;
+
+            // Calculate the forward dot product
+            dotForward = Vector3.Dot(PhysicsObject.Velocity.normalized, vectorToObs);
+
+            // Check if the obstacle is within the forward-facing box
+            if (dotForward > 0 && dotForward * dotForward < avoidMaxSqrDist)
+            {
+                // Calculate the right dot product
+                dotRight = Vector3.Dot(transform.right, vectorToObs);
+
+                // Check if the obstacle is within the box bounds
+                if (Mathf.Abs(dotRight) < avoidRadius + obstacle.radius)
+                {
+                    tempObsPos.Add(obstacle.Position);
+
+                    if (dotRight > 0)
+                    {
+                        // Turn left
+                        avoidForce += -transform.right * maxSpeed * (1f / dotForward);
+                    }
+                    else
+                    {
+                        // Turn right
+                        avoidForce += transform.right * maxSpeed * (1f / dotForward);
+                    }
+                }
+            }
+        }
+
+        return avoidForce * weight;
     }
 
     /// <summary>

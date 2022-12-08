@@ -17,7 +17,7 @@ public class LevelManager : MonoBehaviour
 {
     [Header("Level")]
     public Level currentLevel = Level.Title;
-    private bool changeLevel = false;
+    [SerializeField] bool changeLevel = false;
     public bool ChangeLevel { get { return changeLevel; } set { changeLevel = value; } }
 
     private void Awake()
@@ -47,13 +47,21 @@ public class LevelManager : MonoBehaviour
         switch(currentLevel)
         {
             case Level.Title:
+                // If changeLevel is true
+                if (changeLevel)
+                {
+                    // Load the first level
+                    SceneManager.LoadScene("LevelOne");
+                    currentLevel = Level.One;
+                    changeLevel = false;
+                }
                 break;
 
             case Level.One:
                 // If changeLevel is true
                 if (changeLevel)
                 {
-                    // Load the next scene
+                    // Load the second level
                     SceneManager.LoadScene("LevelTwo");
                     currentLevel = Level.Two;
                     changeLevel = false;
@@ -64,7 +72,7 @@ public class LevelManager : MonoBehaviour
                 // If changeLevel is true
                 if (changeLevel)
                 {
-                    // Load the next scene
+                    // Load the third level
                     SceneManager.LoadScene("LevelThree");
                     currentLevel = Level.Three;
                     changeLevel = false;
@@ -75,7 +83,7 @@ public class LevelManager : MonoBehaviour
                 // If changeLevel is true
                 if (changeLevel)
                 {
-                    // Load the next scene
+                    // Load the end screen
                     SceneManager.LoadScene("EndScreen");
                     currentLevel = Level.End;
                     changeLevel = false;
@@ -83,6 +91,14 @@ public class LevelManager : MonoBehaviour
                 break;
 
             case Level.End:
+                // If changeLevel is true
+                if(changeLevel)
+                {
+                    // Load  the title screen
+                    SceneManager.LoadScene("TitleScreen");
+                    currentLevel = Level.Title;
+                    changeLevel = false;
+                }
                 break;
         }
     }
@@ -113,24 +129,5 @@ public class LevelManager : MonoBehaviour
 
         // Reload the scene
         SceneManager.LoadScene(currentScene.name);
-    }
-
-    public void OnClick()
-    {
-        // Title to Level One Button
-        if(currentLevel == Level.Title)
-        {
-            SceneManager.LoadScene("LevelOne");
-            currentLevel = Level.One;
-            changeLevel = false;
-        }
-
-        // End to Main Screen Button
-        if (currentLevel == Level.End)
-        {
-            SceneManager.LoadScene("TitleScreen");
-            currentLevel = Level.Title;
-            changeLevel = false;
-        }
     }
 }

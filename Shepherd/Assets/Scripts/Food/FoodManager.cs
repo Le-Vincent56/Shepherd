@@ -13,7 +13,9 @@ public class FoodManager : MonoBehaviour
 {
     #region FIELDS
     private Camera cam;
-    public FMState currentState = FMState.Idle;
+    private PlacerManager placerManager;
+    private FMState currentState = FMState.Idle;
+    public FMState CurrentState { get { return currentState; } set { currentState = value; } }
     [SerializeField] Food foodPrefab;
     [SerializeField] List<Food> food = new List<Food>();
     [SerializeField] List<Food> inactiveFood = new List<Food>();
@@ -22,16 +24,19 @@ public class FoodManager : MonoBehaviour
     public List<Food> Food { get { return food; } }
     public float MaxFood { get { return foodMax; } }
     public float PlacedFood { get { return foodPlaced; } }
-    Food tempFood = null;
+    public Food tempFood = null;
 
     private bool prefabSelected = false;
+    public bool PrefabSelected { get { return prefabSelected; } set { prefabSelected = value; } }
     private bool finalizedPlacement = false;
+    public bool FinalizedPlacement { get { return finalizedPlacement; } set { finalizedPlacement = value; } }
     #endregion
 
     // Start is called before the first frame update
     void Start()
     {
         cam = Camera.main;
+        placerManager = GameObject.Find("Placer Manager").GetComponent<PlacerManager>();
     }
 
     // Update is called once per frame
@@ -120,6 +125,8 @@ public class FoodManager : MonoBehaviour
 
     public void OnClick()
     {
+        placerManager.currentType = PlaceType.Food;
+
         // Check if the player can place any more food
         if(foodPlaced < foodMax)
         {
@@ -135,20 +142,6 @@ public class FoodManager : MonoBehaviour
                     currentState = FMState.Idle;
                     break;
             }
-        }
-    }
-
-    public void OnFire(InputAction.CallbackContext context)
-    {
-        switch(currentState)
-        {
-            case FMState.Idle:
-                break;
-
-            case FMState.Selected:
-                // Set finalized placement to true
-                finalizedPlacement = true;
-                break;
         }
     }
 }

@@ -79,4 +79,9 @@ public class Goal : MonoBehaviour
         }
         else return false;
     }
+
+    public void OnSkipClick()
+    {
+        levelManager.ChangeLevel = true;
+    }
 }
