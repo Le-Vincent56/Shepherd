@@ -185,7 +185,7 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 24
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
     m_MaxSize: 40
     m_Alignment: 4
@@ -224,11 +224,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1661222465832362098, guid: a82823195ca49bf41b7e243fa75c314a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.854227
+      value: -5.31
       objectReference: {fileID: 0}
     - target: {fileID: 1661222465832362098, guid: a82823195ca49bf41b7e243fa75c314a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.1480341
+      value: -0.13
       objectReference: {fileID: 0}
     - target: {fileID: 1661222465832362098, guid: a82823195ca49bf41b7e243fa75c314a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -656,7 +656,7 @@ GameObject:
   - component: {fileID: 594302707}
   - component: {fileID: 594302706}
   m_Layer: 0
-  m_Name: Dog
+  m_Name: decorativeDog1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -722,7 +722,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 594302705}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.300963, y: -1.6552906, z: 0}
+  m_LocalPosition: {x: -5.94, y: -1.79, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -786,11 +786,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 798011984144056067, guid: e3f0db3a178608e459f10ee015efb133, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.29
+      value: 8.95
       objectReference: {fileID: 0}
     - target: {fileID: 798011984144056067, guid: e3f0db3a178608e459f10ee015efb133, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.26
+      value: -1.22
       objectReference: {fileID: 0}
     - target: {fileID: 798011984144056067, guid: e3f0db3a178608e459f10ee015efb133, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1117,7 +1117,7 @@ GameObject:
   - component: {fileID: 1873604217}
   - component: {fileID: 1873604216}
   m_Layer: 0
-  m_Name: grassFour
+  m_Name: decorativeGrass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1183,7 +1183,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1873604215}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.87, y: 3.12, z: 0}
+  m_LocalPosition: {x: -6.325773, y: 3.1380339, z: 0}
   m_LocalScale: {x: 13.064866, y: 5.3667, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1258,8 +1258,8 @@ MonoBehaviour:
     m_FontSize: 28
     m_FontStyle: 0
     m_BestFit: 1
-    m_MinSize: 0
-    m_MaxSize: 40
+    m_MinSize: 1
+    m_MaxSize: 80
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -1286,7 +1286,7 @@ GameObject:
   - component: {fileID: 2101891795}
   - component: {fileID: 2101891794}
   m_Layer: 0
-  m_Name: Dog (1)
+  m_Name: decorativeDog2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
